@@ -1,0 +1,28 @@
+{
+  "name": "typescript-stream",
+  "version": "0.0.1",
+  "description": "A Java-like Stream API for TypeScript. ",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LoganBlack88/typescript-stream.git"
+  },
+  "keywords": [
+    "ts",
+    "typescript",
+    "stream"
+  ],
+  "author": "Logan Black",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LoganBlack88/typescript-stream/issues"
+  },
+  "homepage": "https://github.com/LoganBlack88/typescript-stream#readme",
+  "devDependencies": {
+    "typescript": "^3.0.3"
+  }
+}
