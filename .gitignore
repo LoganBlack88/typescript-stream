@@ -1,5 +1,7 @@
 # Generated
 /node_modules/
+/src/dist/
+/typings/
 
 # IDE
 *.iml
