@@ -1,11 +1,16 @@
+import { FilterOp } from './ops/FilterOp';
+import { Optional } from './Optional';
+import { Pipeline } from './Pipeline';
+
 
 export class Stream<T> {
 
     private array: Array<T>;
-
+    private pipeline: Pipeline;
 
     private constructor(array: Array<T>) {
         this.array = array;
+        this.pipeline = new Pipeline();
     }
 
     public static of<T>(array: Array<T>): Stream<T> {
@@ -13,29 +18,26 @@ export class Stream<T> {
     }
 
     public filter(predicate: (a: T) => boolean): Stream<T> {
-        const results: T[] = [];
-        this.array.forEach((value: T) => {
-            if (predicate(value)) {
-                results.push(value);
-            }
-        });
-        return new Stream(results);
+        this.pipeline.add(new FilterOp(predicate));
+        return this;
     }
 
+    /*
     public map<R>(mapper: (a: T) => R): Stream<R> {
-        const results: R[] = [];
-        this.array.forEach((item: T, index: number, array: T[]) => {
-            results.push(mapper(item));
-        });
-        return new Stream(results);
+        //this.pipeline.add(new MapOp(mapper));
+        //return new Stream<R>(this.array as Array<R>, this.pipeline);
     }
+    */
+
+    //
+    // Terminal evaluation methods
+    //
 
     public max(comparator?: (a1: T, a2: T) => number): T {
-        let max: T = this.array[0];
-        this.array.forEach((value: T, index: number) => {
-            if ((!max || index < 1)
-                || (!comparator && value > max)
-                || (comparator && comparator(value, max) > 0)) {
+        let values: Array<T> = this.evaluateAll();
+        let max: T = values[0];
+        values.forEach((value: T, index: number) => {
+            if ((!max || index < 1) || (!comparator && value > max) || (comparator && comparator(value, max) > 0)) {
                 max = value;
             }
         });
@@ -43,11 +45,10 @@ export class Stream<T> {
     }
 
     public min(comparator?: (a1: T, a2: T) => number): T {
-        let min: T = this.array[0];
-        this.array.forEach((value: T, index: number) => {
-            if ((!min || index < 1)
-                || (!comparator && value < min)
-                || (comparator && comparator(value, min) < 0)) {
+        let values: Array<T> = this.evaluateAll();
+        let min: T = values[0];
+        values.forEach((value: T, index: number) => {
+            if ((!min || index < 1) || (!comparator && value < min) || (comparator && comparator(value, min) < 0)) {
                 min = value;
             }
         });
@@ -55,7 +56,19 @@ export class Stream<T> {
     }
 
     public toArray(): Array<T> {
-        return this.array;
+        return this.evaluateAll();
+    }
+
+
+    private evaluateAll(): Array<T> {
+        let results: Array<T> = [];
+        this.array.forEach((value) => {
+            let res: Optional<T> = this.pipeline.evaluate(value);
+            if (res.isDefined()) {
+                results.push(res.getValue());
+            }
+        });
+        return results;
     }
 
 }

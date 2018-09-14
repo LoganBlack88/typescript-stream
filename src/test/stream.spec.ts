@@ -21,6 +21,7 @@ describe('Stream', () => {
         });
     });
 
+    /*
     describe('.map()', () => {
         it('should convert the item value from one type to another', () => {
            const nums: number[] = Stream.of(['1', '2', '3', '4', '5'])
@@ -31,6 +32,7 @@ describe('Stream', () => {
            expect(nums).to.have.same.members([1, 2, 3, 4, 5]);
         });
     });
+    */
 
     describe('.max()', () => {
         it('should return the maximum value using the ">" operator if no comparator is provided', () => {
